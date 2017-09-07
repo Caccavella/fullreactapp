@@ -34,7 +34,6 @@ passport.use(new Auth0Strategy({
     clientSecret: process.env.AUTH_CLIENT_SECRET,
     callbackURL: process.env.AUTH_CALLBACK
 }, function (accessToken, refreshToken, extraParams, profile, done) {
-    console.log(profile)
     const db = app.get('db');
 
     db.find_user(profile.id).then(user => {
@@ -50,12 +49,14 @@ passport.use(new Auth0Strategy({
 }))
 //INVOKED ONCE TO SET UP
 passport.serializeUser(function (user, done) {
+    console.log("SERIALIZING")
+    console.log(user);
     done(null, user);
 })
 //USER COMES FROM SESSION - INVOKED ON EVERY ENDPOINT.
-passport.deserializeUser(function (user, done) {
-    console.log(user);
-    app.get('db').find_session_user(user[0].id).then(user => {
+passport.deserializeUser(function(user, done) {
+    console.log('please work')
+    app.get('db').find_session_user(user[0].id).then( user => {
         return done(null, user[0]);
     })
 })
@@ -66,6 +67,7 @@ app.get('/auth/callback', passport.authenticate('auth0', {
     failureRedirect: 'http://localhost:3000/#/'
 }))
 app.get('/auth/me', (req, res) => {
+    console.log(req.user);
     if (!req.user) {
         return res.status(404).send('User not found')
     } else {

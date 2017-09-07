@@ -15,8 +15,8 @@ const GET_USER_INFO = "GET_USER_INFO";
 //Action Creators
 
 export function getUserInfo() {
-
     const userInfo = axios.get('/auth/me').then( res => {
+        console.log(res.data)
         return res.data
     })
 
